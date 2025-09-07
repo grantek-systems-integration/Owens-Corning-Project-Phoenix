@@ -3,7 +3,9 @@
     "allow": [
       "Bash(python3:*)",
       "Bash(unzip:*)",
-      "Bash(file:*)"
+      "Bash(file:*)",
+      "Bash(claude doctor)",
+      "Bash(claude --version)"
     ],
     "deny": [],
     "ask": []
