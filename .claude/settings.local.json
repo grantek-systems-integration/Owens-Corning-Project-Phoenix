@@ -5,7 +5,8 @@
       "Bash(unzip:*)",
       "Bash(file:*)",
       "Bash(claude doctor)",
-      "Bash(claude --version)"
+      "Bash(claude --version)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
