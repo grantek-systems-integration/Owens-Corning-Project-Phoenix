@@ -6,7 +6,8 @@
       "Bash(file:*)",
       "Bash(claude doctor)",
       "Bash(claude --version)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Read(//mnt/c/Users/kentj/OneDrive/**)"
     ],
     "deny": [],
     "ask": []

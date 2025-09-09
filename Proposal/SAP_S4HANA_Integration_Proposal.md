@@ -19,7 +19,7 @@ This proposal addresses the SAP S4/HANA integration requirements for Owens Corni
 
 ### 1.1 Proposed Dual-Path Strategy
 
-Given the unproven nature of Ignition 8.3's Event Streams module and the aggressive timeline, we propose implementing parallel integration paths:
+Given the unproven nature of Ignition 8.3's Event Streams module and the aggressive timeline, we propose a phased approach starting with proven technology:
 
 #### Primary Path Architecture (Production-Ready)
 
@@ -85,14 +85,38 @@ graph TB
     WDB --> |"Read MessageOutbound"| WHQ
     VDB --> |"Read MessageOutbound"| WHQ
     
-    style S4 fill:#ff99ff,stroke:#333,stroke-width:2px
-    style APIM fill:#99ccff,stroke:#333,stroke-width:2px
-    style WHQ fill:#99ff99,stroke:#333,stroke-width:2px
+    %%% SAP Cloud - Dark Purple background needs white text
+    style S4 fill:#8B4789,stroke:#333,stroke-width:2px,color:#fff
+    
+    %%% Azure - Medium Blue needs white text
+    style APIM fill:#0078D4,stroke:#333,stroke-width:2px,color:#fff
+    
+    %%% World HQ - Green needs black text
+    style WHQ fill:#90EE90,stroke:#333,stroke-width:2px,color:#000
+    style WHQDB fill:#90EE90,stroke:#333,stroke-width:2px,color:#000
+    
+    %%% Site Databases - Light yellow needs black text
+    style SDB fill:#FFE5B4,stroke:#333,stroke-width:2px,color:#000
+    style LDB fill:#FFE5B4,stroke:#333,stroke-width:2px,color:#000
+    style WDB fill:#FFE5B4,stroke:#333,stroke-width:2px,color:#000
+    style VDB fill:#FFE5B4,stroke:#333,stroke-width:2px,color:#000
+    
+    %%% MES Systems - Light blue needs black text
+    style SMES fill:#ADD8E6,stroke:#333,stroke-width:2px,color:#000
+    style LMES fill:#ADD8E6,stroke:#333,stroke-width:2px,color:#000
+    style WMES fill:#ADD8E6,stroke:#333,stroke-width:2px,color:#000
+    style VMES fill:#ADD8E6,stroke:#333,stroke-width:2px,color:#000
+    
+    %%% Plant Floor - Gray needs white text
+    style SPF fill:#708090,stroke:#333,stroke-width:2px,color:#fff
+    style LPF fill:#708090,stroke:#333,stroke-width:2px,color:#fff
+    style WPF fill:#708090,stroke:#333,stroke-width:2px,color:#fff
+    style VPF fill:#708090,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 **Primary Path Message Flow:**
 
-1. **Downstream (S4 → Sites):**
+1. **Downstream (S4 to Sites):**
    - S4/HANA publishes production orders and master data
    - Azure APIM receives and routes messages to WHQ BE
    - WHQ BE Ignition instance processes and distributes messages
@@ -101,7 +125,7 @@ graph TB
    - Local processing and plant floor integration occurs
    - Results written to MessageOutbound table
 
-2. **Upstream (Sites → S4):**
+2. **Upstream (Sites to S4):**
    - Site operations generate confirmations/transactions
    - Gateway scripts write to MessageOutbound table
    - WHQ BE scans all site MessageOutbound tables
@@ -277,9 +301,25 @@ graph TB
     ES <--> UDT3
     ES <--> UDT4
     
-    style S4 fill:#ff99ff,stroke:#333,stroke-width:2px
-    style DS fill:#ffccff,stroke:#333,stroke-width:2px
-    style ES fill:#99ff99,stroke:#333,stroke-width:2px
+    %%% SAP Cloud - Dark Purple needs white text
+    style S4 fill:#8B4789,stroke:#333,stroke-width:2px,color:#fff
+    style DS fill:#8B4789,stroke:#333,stroke-width:2px,color:#fff
+    
+    %%% Kafka Topics - Dark Orange needs white text
+    style KT1 fill:#D2691E,stroke:#333,stroke-width:2px,color:#fff
+    style KT2 fill:#D2691E,stroke:#333,stroke-width:2px,color:#fff
+    style KT3 fill:#D2691E,stroke:#333,stroke-width:2px,color:#fff
+    style KT4 fill:#D2691E,stroke:#333,stroke-width:2px,color:#fff
+    style KT5 fill:#D2691E,stroke:#333,stroke-width:2px,color:#fff
+    
+    %%% Event Streams - Light Green needs black text
+    style ES fill:#90EE90,stroke:#333,stroke-width:2px,color:#000
+    
+    %%% UDTs - Light Blue needs black text
+    style UDT1 fill:#ADD8E6,stroke:#333,stroke-width:2px,color:#000
+    style UDT2 fill:#ADD8E6,stroke:#333,stroke-width:2px,color:#000
+    style UDT3 fill:#ADD8E6,stroke:#333,stroke-width:2px,color:#000
+    style UDT4 fill:#ADD8E6,stroke:#333,stroke-width:2px,color:#000
 ```
 
 **Future Path Key Components:**
@@ -312,10 +352,10 @@ graph TB
        estimated: "100 msg/sec peak"
        guaranteed: "50 msg/sec sustained"
      site_routing:
-       - "QC01" → doors.sacopan.orders
-       - "MS01" → doors.laurel.orders  
-       - "ND01" → doors.wahpeton.orders
-       - "NV01" → doors.verdi.orders
+       - "QC01" -> doors.sacopan.orders
+       - "MS01" -> doors.laurel.orders  
+       - "ND01" -> doors.wahpeton.orders
+       - "NV01" -> doors.verdi.orders
    
    doors.production.confirmations:
      description: "Production confirmations using OP_API_PROD_ORDER_CONFIRMATIO_2_SRV_0001"
@@ -521,7 +561,7 @@ graph TB
 The system will support the specific 4-step transaction sequence defined in the RFQ:
 
 #### Transaction 1: Production Order Confirmation
-- **Direction:** Ignition → S4/HANA
+- **Direction:** Ignition to S4/HANA
 - **API:** `OP_API_PROD_ORDER_CONFIRMATIO_2_SRV_0001`
 - **API Reference:** https://api.sap.com/api/OP_API_PROD_ORDER_CONFIRMATIO_2_SRV_0001/overview
 - **Trigger:** Operator confirmation or automatic count threshold
@@ -539,7 +579,7 @@ The system will support the specific 4-step transaction sequence defined in the 
 - **Error Handling:** Transaction rollback on failure, retry queue for network issues
 
 #### Transaction 2: Handling Unit Creation
-- **Direction:** Ignition → S4/HANA
+- **Direction:** Ignition to S4/HANA
 - **API:** `OP_HANDLINGUNIT_0001` (CREATE operation)
 - **API Reference:** https://api.sap.com/api/OP_HANDLINGUNIT_0001/overview
 - **Trigger:** Successful production order confirmation
@@ -557,7 +597,7 @@ The system will support the specific 4-step transaction sequence defined in the 
 - **Error Handling:** Delete/reverse HU creation on downstream failures
 
 #### Transaction 3: Pack HU onto Inbound Delivery
-- **Direction:** Ignition → S4/HANA
+- **Direction:** Ignition to S4/HANA
 - **API:** `OP_HANDLINGUNIT_0001` (PACK operation)
 - **API Reference:** https://api.sap.com/api/OP_HANDLINGUNIT_0001/overview
 - **Trigger:** Successful HU creation
@@ -575,7 +615,7 @@ The system will support the specific 4-step transaction sequence defined in the 
 - **Error Handling:** Unpack HU from delivery on downstream failure
 
 #### Transaction 4: Post Goods Receipt for Inbound Delivery
-- **Direction:** Ignition → S4/HANA
+- **Direction:** Ignition to S4/HANA
 - **API:** `OP_API_INBOUND_DELIVERY_SRV_0002` (PostGoodsReceipt)
 - **API Reference:** https://api.sap.com/api/OP_API_INBOUND_DELIVERY_SRV_0002/path/post_PostGoodsReceipt
 - **Trigger:** Successful HU packing to inbound delivery
@@ -596,13 +636,13 @@ The system will support the specific 4-step transaction sequence defined in the 
 
 **Sequential Execution:**
 ```
-Step 1: Production Confirmation → Creates GR + IBD (if EWM)
-   ↓
-Step 2: HU Creation → Creates handling unit for produced goods
-   ↓  
-Step 3: Pack HU → Assigns HU to inbound delivery
-   ↓
-Step 4: Post GR → Final goods receipt posting
+Step 1: Production Confirmation - Creates GR + IBD (if EWM)
+   |
+Step 2: HU Creation - Creates handling unit for produced goods
+   |  
+Step 3: Pack HU - Assigns HU to inbound delivery
+   |
+Step 4: Post GR - Final goods receipt posting
 ```
 
 **Transaction Integrity:**
@@ -635,7 +675,7 @@ Step 4: Post GR → Final goods receipt posting
 The S4/HANA "Clean Core" principle requires all error handling to occur outside SAP. However, routing through Azure APIM creates an additional challenge: **limited visibility into actual SAP error responses**. Our error handling strategy addresses this multi-layered architecture:
 
 ```
-Ignition → APIM → SAP S4/HANA
+Ignition -> APIM -> SAP S4/HANA
    ↑         ↑        ↑
 Error     APIM      SAP Error
 Handler   Wrapper   (Hidden)
@@ -836,9 +876,9 @@ transaction_state = {
 ```
 
 **Compensation Logic:**
-- Step 4 fails → Unpack HU (Step 3 reverse)
-- Step 3 fails → Delete HU (Step 2 reverse)
-- Step 2 fails → Cancel confirmation (Step 1 reverse)
+- Step 4 fails: Unpack HU (Step 3 reverse)
+- Step 3 fails: Delete HU (Step 2 reverse)
+- Step 2 fails: Cancel confirmation (Step 1 reverse)
 - Full audit trail maintained in Ignition
 
 ### 2.3 Error Recovery Queue
@@ -959,7 +999,7 @@ transaction_state = {
 - REST API integration framework with resilience patterns
 - Production order download and caching system
 - Manual confirmation interface with full 4-step process
-- Comprehensive error handling and recovery queue
+- Basic error handling and recovery queue
 - Local cache implementation with offline capabilities
 - Database schema with audit trails
 - Authentication and authorization framework
@@ -1152,13 +1192,13 @@ transaction_state = {
    - Activate project recovery mode
    - Reduce scope to absolute minimum viable product
    - Prioritize single site (Laurel) for initial go-live
-   - Implement parallel development streams
+   - Focus single team on critical path items
 
 2. **Short Term (1-4 weeks):**
-   - Deploy basic manual confirmation system
+   - Deploy basic manual confirmation system at Laurel
    - Implement manual production order display
    - Create paper backup processes
-   - Plan phased rollout to remaining sites
+   - Plan Phase 2 for remaining sites
 
 3. **Long Term (Post February 2026):**
    - Complete full automation in phases
@@ -1194,10 +1234,10 @@ transaction_state = {
 
 | Risk Level   | Response Time | Escalation Path                     | Decision Authority |
 | ------------ | ------------- | ----------------------------------- | ------------------ |
-| **LOW**      | 4 hours       | Project Manager → Technical Lead    | Technical Lead     |
-| **MEDIUM**   | 2 hours       | Technical Lead → Program Manager    | Program Manager    |
-| **HIGH**     | 1 hour        | Program Manager → Executive Sponsor | Executive Sponsor  |
-| **CRITICAL** | 30 minutes    | Program Manager → Executive Sponsor | Executive Sponsor  |
+| **LOW**      | 4 hours       | Project Manager to Technical Lead    | Technical Lead     |
+| **MEDIUM**   | 2 hours       | Technical Lead to Program Manager    | Program Manager    |
+| **HIGH**     | 1 hour        | Program Manager to Executive Sponsor | Executive Sponsor  |
+| **CRITICAL** | 30 minutes    | Program Manager to Executive Sponsor | Executive Sponsor  |
 
 **Communication Protocols:**
 - All risks logged in project risk register
@@ -1262,10 +1302,63 @@ transaction_state = {
 
 ### 8.2 Test Environment Requirements
 
-- S4/HANA test instance with production-like data
-- Network simulation for latency/failure testing
-- Load testing tools for scalability validation
-- Automated test execution framework
+#### Critical Testing Infrastructure for Phase 1 Success
+
+**SAP S4/HANA Test Environment (MANDATORY):**
+- Dedicated S4/HANA test instance with production-like configuration
+- Full API access with separate credentials from production
+- Test data including:
+  - 50+ production orders in various states
+  - 100+ material master records
+  - All 4 plant configurations (Laurel, Sacopan, Wahpeton, Verdi)
+  - Work center and routing data
+- Ability to reset test data for repeated testing cycles
+- Performance characteristics similar to production (< 5 second response times)
+
+**Network Test Environment:**
+- Simulated WAN connectivity between Laurel and cloud resources
+- Ability to test network interruptions and latency
+- Firewall rules matching production configuration
+- VPN or direct connectivity for development team
+
+**Ignition Development Infrastructure:**
+- Separate Ignition gateway for development (8.1.x stable)
+- Test database instance (PostgreSQL)
+- Ability to simulate operator interactions
+- Load testing capability for 20+ concurrent users
+
+#### Phase 2 Testing Prerequisites
+
+**PLC/Equipment Simulation Environment (REQUIRED for Phase 2):**
+- PLC simulators or test PLCs for each equipment type:
+  - Dropout sensors simulation
+  - Laser eye counting simulation
+  - Scale system data simulation (Laurel)
+- Ability to generate automatic count triggers
+- Error condition simulation capabilities
+- Variable speed and throughput testing
+
+**Advanced Testing Capabilities (Phase 2):**
+- Kafka test topics and message generation
+- APIM test endpoints with error injection
+- Multi-site database replication testing
+- Failover and recovery scenario testing
+- Performance benchmarking tools
+
+**Testing Environment Availability Timeline:**
+- **Phase 1 Start (Nov 1):** Basic S4/HANA test access REQUIRED
+- **Week 2:** Full test environment operational
+- **Week 6:** UAT environment ready (production-like)
+- **Phase 2:** PLC simulation environment required BEFORE automation development
+
+**Testing Environment Ownership:**
+| Component | Provider | Setup Required By | Critical for |
+|-----------|----------|-------------------|--------------|
+| S4/HANA Test Instance | Owens Corning | Nov 1, 2025 | Phase 1 |
+| Network Infrastructure | Owens Corning | Nov 1, 2025 | Phase 1 |
+| Ignition Test Gateway | Grantek | Week 1 | Phase 1 |
+| PLC Simulators | Joint Effort | Phase 2 Start | Phase 2 |
+| Kafka Test Environment | Owens Corning | Phase 3 Start | Phase 3 |
 
 ---
 
@@ -1375,96 +1468,65 @@ transaction_state = {
 
 #### **TIMELINE FEASIBILITY ANALYSIS: NOVEMBER 1 START DATE**
 
-**❌ CRITICAL ISSUE: TIMELINE NOT FEASIBLE AS CURRENTLY SCOPED**
+**CRITICAL ISSUE: TIMELINE NOT FEASIBLE AS CURRENTLY SCOPED**
 
 ```
-Feasible Plan:  July 1, 2025 ──────32 weeks─────→ Feb 6, 2026 ✓
-Requested Plan: Nov 1, 2025 ──14 weeks→ Feb 6, 2026 ❌ (18 weeks SHORT)
+Feasible Plan:  July 1, 2025 ---- 32 weeks ---- Feb 6, 2026 (FEASIBLE)
+Requested Plan: Nov 1, 2025 -- 14 weeks -- Feb 6, 2026 (NOT FEASIBLE - 18 weeks SHORT)
 ```
 
-**Compressed Timeline Options:**
-
-**Option A: MVP-Only Approach (14 weeks - BARELY FEASIBLE)**
-```
-Nov 2025     ┌─ PHASE 1: MVP ONLY (Manual Confirmations) ─┐
-            │  Infrastructure + Basic API Integration    │
-            └────────────────────────────────────────────┘
-                                    │
-Dec 2025                           ┌┴─ TESTING & UAT ─┐
-                                  │  Compressed       │
-                                  └───────────────────┘
-                                            │
-Jan 2026                                   ┌┴─ PARALLEL ─┐
-                                          │   Run       │
-                                          └─────────────┘
-                                                    │
-Feb 2026                                           ┌┴─ GO-LIVE ─┐
-                                                  │   MVP Only │
-                                                  └────────────┘
-```
-
-**Option B: Phased Go-Live Approach (RECOMMENDED)**
+**Phased Approach - Single Team Strategy:**
 ```
 Nov 2025     ┌─ PHASE 1: SINGLE SITE (Laurel) ─┐
-            │  Basic Integration              │
+            │  Manual Confirmations Only      │
             └─────────────────────────────────┘
                                 │
 Jan 2026                       ┌┴─ LAUREL GO-LIVE ─┐
                               │   Feb 6, 2026     │
                               └───────────────────┘
                                         │
-Mar 2026                               ┌┴─ REMAINING SITES ─┐
-                                      │   Mar-May 2026     │
-                                      └────────────────────┘
+Mar 2026                               ┌┴─ PHASE 2: AUTOMATION + SITES ─┐
+                                      │   Mar-May 2026              │
+                                      └────────────────────────────┘
+
 ```
 
-#### Compressed Timeline Options (November 1, 2025 Start)
+#### Phase 1 Timeline Detail (November 1, 2025 Start)
 
-**⚠️ OPTION A: MVP-ONLY APPROACH (14 weeks - HIGH RISK)**
+| Phase | Week | Start Date | End Date | Milestone | Deliverables | Success Criteria | 
+|-------|------|------------|----------|-----------|--------------|------------------|
+| **Kickoff** | 0 | Nov 1, 2025 | Nov 3, 2025 | Project Start | Team mobilization | 5-person team ready |
+| **Infrastructure** | 1-2 | Nov 4, 2025 | Nov 17, 2025 | Infrastructure Setup | Gateway, API connectivity | Laurel site connected |
+| **Development** | 3-6 | Nov 18, 2025 | Dec 15, 2025 | Manual System Build | 4-step confirmation UI | Basic system working |
+| **Testing** | 7-8 | Dec 16, 2025 | Dec 29, 2025 | Integration Testing | End-to-end validation | Core process verified |
+| **UAT** | 9-10 | Dec 30, 2025 | Jan 12, 2026 | User Acceptance | Business validation | User sign-off |
+| **Parallel Run** | 11-12 | Jan 13, 2026 | Jan 26, 2026 | Production Validation | Shadow mode operation | Data accuracy >95% |
+| **GO-LIVE** | 13-14 | Jan 27, 2026 | Feb 9, 2026 | Laurel Production | Go-live & stabilization | Feb 6 target met |
 
-| Phase | Week | Start Date | End Date | Milestone | Deliverables (MVP ONLY) | Success Criteria | Risk Level |
-|-------|------|------------|----------|-----------|-------------------------|------------------|------------|
-| **Kickoff** | 0 | Nov 1, 2025 | Nov 3, 2025 | Emergency Project Start | Immediate team mobilization | Resources deployed instantly | CRITICAL |
-| **Sprint 1** | 1-2 | Nov 4, 2025 | Nov 17, 2025 | Infrastructure + API Core | Gateway deployment, basic REST API | Laurel site connected only | CRITICAL |
-| **Sprint 2** | 3-4 | Nov 18, 2025 | Dec 1, 2025 | Manual Confirmation System | 4-step process (manual only) | Basic confirmations working | CRITICAL |
-| **Sprint 3** | 5-6 | Dec 2, 2025 | Dec 15, 2025 | Integration Testing | End-to-end testing | Core process validated | CRITICAL |
-| **Sprint 4** | 7-8 | Dec 16, 2025 | Dec 29, 2025 | UAT (Compressed) | User acceptance (limited scope) | Business sign-off by Dec 29 | CRITICAL |
-| **Sprint 5** | 9-10 | Dec 30, 2025 | Jan 12, 2026 | Parallel Run | Shadow mode (Laurel only) | Data accuracy >95% | CRITICAL |
-| **Sprint 6** | 11-12 | Jan 13, 2026 | Jan 26, 2026 | Go-Live Prep | Final testing, training | Readiness confirmed | CRITICAL |
-| **GO-LIVE** | 13-14 | Jan 27, 2026 | Feb 9, 2026 | MVP Production | **Laurel site ONLY** | Feb 6 target (MVP) | CRITICAL |
+**PHASED APPROACH - SINGLE TEAM BENEFITS:**
 
-**📋 MVP-ONLY SCOPE LIMITATIONS:**
-- ✅ **Included:** Manual production confirmations, basic 4-step SAP process, Laurel site only
-- ❌ **EXCLUDED:** All automation, PLC integration, other sites, advanced error recovery, analytics
-- ❌ **POST-GOLIVE:** Remaining sites (Sacopan, Wahpeton, Verdi) deployed Mar-Jun 2026
+- **Meets Feb 6 deadline** with functional system at Laurel
+- **Single team focus** - no coordination overhead
+- **Manageable scope** - manual confirmations only  
+- **Reduced risk** - proven technology only
+- **Clear Phase 2 path** for automation and remaining sites
 
----
-
-**✅ OPTION B: PHASED APPROACH (RECOMMENDED)**
-
-| Phase | Timeline | Scope | Sites | Feasibility |
-|-------|----------|-------|-------|-------------|
-| **Phase 1** | Nov 1 - Feb 6, 2026 | MVP Manual System | **Laurel Only** | FEASIBLE |
-| **Phase 2** | Mar 1 - Apr 30, 2026 | Add Automation + 2 sites | **+ Sacopan, Wahpeton** | RECOMMENDED |
-| **Phase 3** | May 1 - Jun 30, 2026 | Complete deployment | **+ Verdi** | OPTIMAL |
-
-**PHASED APPROACH BENEFITS:**
-- ✅ **Meets Feb 6 deadline** with functional system at Laurel
-- ✅ **Reduces risk** through incremental deployment  
-- ✅ **Allows proper testing** at each phase
-- ✅ **Builds confidence** before full rollout
-- ✅ **Provides early ROI** from Laurel operations
+| Phase | Timeline | Scope | Sites | Team |
+|-------|----------|-------|-------|------|
+| **Phase 1** | Nov 1, 2025 - Feb 6, 2026 | Manual Confirmations | Laurel Only | 5-person |
+| **Phase 2** | Mar 1 - May 31, 2026 | Automation + Error Handling | + 3 Sites | Same team |
+| **Phase 3** | Jun 1 - Jul 31, 2026 | Advanced Features | All Sites | As needed |
 
 ### 12.2 Critical Path Analysis (November Start)
 
 #### **COMPRESSED CRITICAL PATH (14 weeks maximum)**
 ```
-Nov 1 Start → Infrastructure (Week 1) → API Integration (Week 2-3) → 
-Manual Confirmations (Week 4-5) → Testing (Week 6-7) → UAT (Week 8) → 
-Parallel Run (Week 9-10) → Go-Live Prep (Week 11-12) → Feb 6 Go-Live
+Nov 1 Start -> Infrastructure (Week 1) -> API Integration (Week 2-3) -> 
+Manual Confirmations (Week 4-5) -> Testing (Week 6-7) -> UAT (Week 8) -> 
+Parallel Run (Week 9-10) -> Go-Live Prep (Week 11-12) -> Feb 6 Go-Live
 ```
 
-**❌ CRITICAL TIMELINE RISKS (HIGH PROBABILITY OF FAILURE):**
+**CRITICAL TIMELINE RISKS (HIGH PROBABILITY OF FAILURE):**
 
 | Dependency | Original Timeline | Compressed Timeline | Risk Level | Impact |
 |------------|------------------|-------------------|------------|---------|
@@ -1478,11 +1540,11 @@ Parallel Run (Week 9-10) → Go-Live Prep (Week 11-12) → Feb 6 Go-Live
 #### **MANDATORY SUCCESS PREREQUISITES (NOVEMBER START)**
 
 **MUST BE READY BY NOVEMBER 1:**
-1. ✅ **S4/HANA API Access** - Credentials, documentation, test environment
-2. ✅ **Network Infrastructure** - Laurel site connectivity confirmed
-3. ✅ **Project Team** - All resources immediately available (no ramp-up time)
-4. ✅ **Business Users** - Dedicated availability for compressed UAT
-5. ✅ **OC IT Support** - 100% commitment for infrastructure acceleration
+1. **S4/HANA API Access** - Credentials, documentation, test environment
+2. **Network Infrastructure** - Laurel site connectivity confirmed
+3. **Project Team** - All resources immediately available (no ramp-up time)
+4. **Business Users** - Dedicated availability for compressed UAT
+5. **OC IT Support** - 100% commitment for infrastructure acceleration
 
 **NOVEMBER 1-7 CRITICAL ACTIVITIES (NO DELAYS TOLERATED):**
 - Day 1: Project kickoff and team mobilization
@@ -1493,17 +1555,17 @@ Parallel Run (Week 9-10) → Go-Live Prep (Week 11-12) → Feb 6 Go-Live
 #### **RISK MITIGATION FOR COMPRESSED TIMELINE**
 
 **Strategy 1: Eliminate All Non-Essentials**
-- ❌ Remove all automation features
-- ❌ Remove 3 sites (Sacopan, Wahpeton, Verdi)
-- ❌ Remove advanced error handling
-- ❌ Remove performance optimization
-- ❌ Remove analytics and reporting
+- Remove all automation features
+- Remove 3 sites (Sacopan, Wahpeton, Verdi)
+- Remove advanced error handling
+- Remove performance optimization
+- Remove analytics and reporting
 
-**Strategy 2: Parallel Development Streams**
-- Team A: Infrastructure + API integration
-- Team B: Manual confirmation interface
-- Team C: Testing preparation and scripts
-- **Risk:** Requires 3x normal team size
+**Strategy 2: Phased Development Approach**
+- Phase 1: Laurel site manual confirmations only
+- Phase 2: Error handling and automation
+- Phase 3: Remaining sites deployment
+- **Benefit:** Single team, manageable scope
 
 **Strategy 3: Continuous Integration/Testing**
 - Daily integration testing (not weekly)
@@ -1513,16 +1575,16 @@ Parallel Run (Week 9-10) → Go-Live Prep (Week 11-12) → Feb 6 Go-Live
 #### **GO/NO-GO DECISION POINTS**
 
 **Week 2 Decision Point (Nov 15, 2025):**
-- ✅ If API connectivity successful → Continue
-- ❌ If API issues persist → **ABORT or request timeline extension**
+- If API connectivity successful: Continue
+- If API issues persist: **ABORT or request timeline extension**
 
 **Week 4 Decision Point (Nov 29, 2025):**
-- ✅ If manual confirmations working → Continue to UAT
-- ❌ If major issues → **ABORT or request timeline extension**
+- If manual confirmations working: Continue to UAT
+- If major issues: **ABORT or request timeline extension**
 
 **Week 8 Decision Point (Dec 27, 2025):**
-- ✅ If UAT passed → Continue to parallel run
-- ❌ If UAT fails → **ABORT or request timeline extension**
+- If UAT passed: Continue to parallel run
+- If UAT fails: **ABORT or request timeline extension**
    - Owner: OC Business Users
 
 #### Schedule Buffer Analysis
@@ -1542,17 +1604,17 @@ Weeks 31-35: ████░░░░░░ (40% capacity) - Go-Live & Support
 
 ### 12.3 Compressed Timeline Milestone Gates & Go/No-Go Decisions
 
-**⚠️ CRITICAL: All gates operate under COMPRESSED TIMELINE with ZERO BUFFER**
+**CRITICAL: All gates operate under COMPRESSED TIMELINE with ZERO BUFFER**
 
 #### Sprint 1 Gate (Week 2 - November 15, 2025)
 **EMERGENCY ASSESSMENT POINT**
 
 **Go Criteria (MANDATORY):**
-- [x] S4/HANA API connectivity established and validated
-- [x] Laurel site network infrastructure operational
-- [x] Basic Ignition gateway deployed and communicating
-- [x] Project team fully mobilized with no resource gaps
-- [x] OC IT support team actively engaged
+- S4/HANA API connectivity established and validated
+- Laurel site network infrastructure operational
+- Basic Ignition gateway deployed and communicating
+- Project team fully mobilized with no resource gaps
+- OC IT support team actively engaged
 
 **No-Go Triggers (PROJECT TERMINATION):**
 - API access not available or non-functional
@@ -1570,17 +1632,17 @@ Weeks 31-35: ████░░░░░░ (40% capacity) - Go-Live & Support
 **MVP CORE FUNCTIONALITY CHECKPOINT**
 
 **Go Criteria (MVP ONLY):**
-- [x] Manual production confirmations working end-to-end
-- [x] 4-step SAP transaction process functional
-- [x] Basic error handling operational
-- [x] Production order display functional
-- [x] Laurel operators can complete basic workflows
+- Manual production confirmations working end-to-end
+- 4-step SAP transaction process functional
+- Basic error handling operational
+- Production order display functional
+- Laurel operators can complete basic workflows
 
 **Reduced Scope Acceptance:**
-- ❌ Automation features EXCLUDED from MVP
-- ❌ Advanced error recovery DEFERRED
-- ❌ Performance optimization DEFERRED
-- ❌ Other sites (Sacopan, Wahpeton, Verdi) DEFERRED
+- Automation features EXCLUDED from MVP
+- Advanced error recovery DEFERRED
+- Performance optimization DEFERRED
+- Other sites (Sacopan, Wahpeton, Verdi) DEFERRED
 
 **No-Go Triggers (PROJECT ABORT OR TIMELINE EXTENSION):**
 - Manual confirmations fail consistently
@@ -1596,18 +1658,18 @@ Weeks 31-35: ████░░░░░░ (40% capacity) - Go-Live & Support
 **COMPRESSED UAT COMPLETION**
 
 **Go Criteria (MVP ACCEPTANCE):**
-- [x] Laurel business users complete end-to-end testing
-- [x] All critical business processes validated
-- [x] Data accuracy acceptable for manual processes (>95%)
-- [x] Operators trained and confident on MVP system
-- [x] Known issues documented with workarounds
+- Laurel business users complete end-to-end testing
+- All critical business processes validated
+- Data accuracy acceptable for manual processes (>95%)
+- Operators trained and confident on MVP system
+- Known issues documented with workarounds
 
 **Compressed UAT Scope:**
-- ✅ Core manual confirmation workflows
-- ✅ Production order viewing and processing
-- ✅ Basic error handling and recovery
-- ❌ Advanced features testing EXCLUDED
-- ❌ Automation testing DEFERRED to Phase 2
+- Core manual confirmation workflows
+- Production order viewing and processing
+- Basic error handling and recovery
+- Advanced features testing EXCLUDED
+- Automation testing DEFERRED to Phase 2
 
 **No-Go Triggers (TIMELINE EXTENSION REQUIRED):**
 - Business users cannot complete core workflows
@@ -1623,19 +1685,19 @@ Weeks 31-35: ████░░░░░░ (40% capacity) - Go-Live & Support
 **GO-LIVE READINESS CHECKPOINT**
 
 **Go Criteria (MVP PRODUCTION READY):**
-- [x] Parallel run demonstrates >95% data accuracy
-- [x] All MVP-scope critical issues resolved
-- [x] Manual fallback procedures tested and documented
-- [x] Laurel operations team certified on MVP system
-- [x] Support procedures and contacts established
+- Parallel run demonstrates >95% data accuracy
+- All MVP-scope critical issues resolved
+- Manual fallback procedures tested and documented
+- Laurel operations team certified on MVP system
+- Support procedures and contacts established
 
 **MVP Production Readiness:**
-- ✅ Manual confirmations stable and reliable
-- ✅ Basic monitoring and alerting functional
-- ✅ Error logging and basic recovery working
-- ✅ User training completed for MVP scope
-- ❌ Full automation DEFERRED to Phase 2
-- ❌ Advanced analytics DEFERRED to Phase 2
+- Manual confirmations stable and reliable
+- Basic monitoring and alerting functional
+- Error logging and basic recovery working
+- User training completed for MVP scope
+- Full automation DEFERRED to Phase 2
+- Advanced analytics DEFERRED to Phase 2
 
 **No-Go Triggers (ABORT GO-LIVE):**
 - Parallel run data accuracy <95%
@@ -1651,18 +1713,18 @@ Weeks 31-35: ████░░░░░░ (40% capacity) - Go-Live & Support
 **FINAL PRODUCTION CUTOVER DECISION**
 
 **Go Criteria (FINAL AUTHORIZATION):**
-- [x] Weekend cutover plan approved and resourced
-- [x] All stakeholders confirm readiness
-- [x] Rollback procedures validated and ready
-- [x] Support teams on standby
-- [x] Communication plan activated
+- Weekend cutover plan approved and resourced
+- All stakeholders confirm readiness
+- Rollback procedures validated and ready
+- Support teams on standby
+- Communication plan activated
 
 **Final MVP Scope Confirmation:**
-- ✅ Laurel site MVP manual confirmation system
-- ✅ Basic SAP integration for manual processes
-- ✅ Essential error handling and recovery
-- ❌ Remaining sites go-live: March-June 2026
-- ❌ Automation features: Phase 2 delivery
+- Laurel site MVP manual confirmation system
+- Basic SAP integration for manual processes
+- Essential error handling and recovery
+- Remaining sites go-live: March-June 2026
+- Automation features: Phase 2 delivery
 
 **No-Go Triggers (EMERGENCY ABORT):**
 - Last-minute critical defects discovered
@@ -1695,128 +1757,173 @@ Weeks 31-35: ████░░░░░░ (40% capacity) - Go-Live & Support
 #### Fixed-Price Project Phases
 Based on the detailed analysis and risk assessment, Grantek proposes a phased pricing approach that balances project certainty with flexibility for discovered requirements.
 
-**MVP Phase: Foundation & Core Integration (Fixed Price)**
-**Scope Limited to Laurel Site Only - Manual Confirmations**
+**Phase 1: Foundation & Basic Integration (Fixed Price)**
+**Scope Limited to Laurel Site Only - Manual Confirmations ONLY**
 
-- SAP S4/HANA REST API integration development
-- Production order management system (manual only)
-- Manual confirmation system with 4-step process
-- Essential error handling and recovery framework
-- Local caching for basic offline operation
-- Database design and implementation
-- Basic monitoring and alerting
-- Documentation and training (MVP scope)
+**INCLUDED in Phase 1:**
+- SAP S4/HANA REST API connectivity and authentication
+- Production order download and display functionality
+- Manual confirmation interface for 4-step SAP process
+- Basic data validation and input controls
+- Local database for order caching (view-only)
+- Simple operator screens for production visibility
+- Basic user authentication and role management
+- Operator training and documentation
 
-**MVP Phase Investment:** $305,000
-**(14 weeks, 4-person team, risk-adjusted rates)**
+**EXPLICITLY EXCLUDED from Phase 1:**
+- Complex error handling and recovery logic (Phase 2)
+- Automatic confirmations from PLCs (Phase 2)
+- PLC/equipment integration (Phase 2)
+- Advanced retry mechanisms (Phase 2)
+- Compensation/rollback logic (Phase 2)
+- Performance optimization (Phase 2)
+- Other sites - Sacopan, Wahpeton, Verdi (Phase 2)
+- Analytics and reporting dashboards (Phase 3)
+- Kafka/Event Streams integration (Phase 3)
 
-**Phase 2: Site Expansion & Automation (Future Fixed Price)**
-**Scope: Add Sacopan, Wahpeton, Verdi + Automation Features**
+**Phase 1 Investment:** $473,500
+**(14 weeks, 5-person team, Laurel site only)**
 
-- Deploy system to 3 additional sites
+**Phase 2: Error Handling, Automation & Site Expansion (Future Fixed Price)**
+**Scope: Complex Integration Features + 3 Additional Sites**
+
+**INCLUDED in Phase 2:**
+- Comprehensive error handling framework
+- Advanced retry logic with exponential backoff
+- Transaction compensation and rollback procedures
 - PLC integration for automatic confirmations
-- Advanced error recovery with compensation logic
+- Equipment sensor integration and counting
 - Performance optimization and batch processing
+- Deploy to Sacopan, Wahpeton, Verdi sites
 - Enhanced monitoring dashboards
-- Advanced training and knowledge transfer
+- Advanced operator training
 
-**Estimated Phase 2 Investment:** $180,000 - $220,000
-**(8-10 weeks, same team, 3 additional sites)**
+**Estimated Phase 2 Investment:** $380,000 - $450,000
+**(10-12 weeks, same team, complex integration)**
 
 **Phase 3: Advanced Features (Time & Materials - Optional)**
-**Scope: Future Enhancements if Required**
+**Scope: Future Enhancements if Technology Matures**
 
-- Kafka/Event Streams integration (when technology stable)
-- Advanced analytics and reporting
+- Kafka/Event Streams integration (when Ignition 8.3 stable)
+- Advanced analytics and KPI reporting
 - Mobile applications for supervisors
-- Integration with additional ERP modules
+- PI System integration (if required)
+- Integration with additional SAP modules
 
-**Estimated Phase 3 Investment:** $75,000 - $150,000
-**(4-8 weeks, specialized development as needed)**
+**Estimated Phase 3 Investment:** $150,000 - $250,000
+**(6-10 weeks, specialized development as needed)**
 
-#### Resource Loading Analysis (4-Person Team)
+#### Phase 1 Resource Loading (5-Person Team)
 
-**Team Composition:**
-- **EW Engineer:** 100% loading (40 hrs/week) @ $115/hour
-- **Senior Developer:** 100% loading (40 hrs/week) @ $195/hour  
-- **Technical Lead:** 20% loading (8 hrs/week) @ $195/hour
-- **Project Manager:** 10% loading (4 hrs/week) @ $175/hour
+**Team Composition - Phased Approach:**
+- **Technical Lead:** 60% loading (24 hrs/week) @ $205/hour  
+- **Senior Developer #1:** 100% loading (40 hrs/week) @ $195/hour
+- **Senior Developer #2:** 100% loading (40 hrs/week) @ $195/hour
+- **EW/Testing Engineer:** 50% loading (20 hrs/week) @ $115/hour
+- **Project Manager:** 25% loading (10 hrs/week) @ $175/hour
 
-**Weekly Team Cost:** $14,660
+**Weekly Team Cost:** $25,870**
+**Note:** Balanced team focused on Laurel site only for Phase 1
 
-#### Effort Breakdown Analysis (Compressed Timeline - 14 Weeks)
+#### Phase 1 Effort Breakdown (14 Weeks - Laurel Site Only)
 
-| Resource | Loading | Weekly Hours | Hourly Rate | Total Hours | Total Cost |
-|----------|---------|-------------|-------------|-------------|------------|
-| **EW Engineer** | 100% | 40 | $115 | 560 | $64,400 |
-| **Senior Developer** | 100% | 40 | $195 | 560 | $109,200 |
-| **Technical Lead** | 20% | 8 | $195 | 112 | $21,840 |
-| **Project Manager** | 10% | 4 | $175 | 56 | $9,800 |
-| **Total Team Cost** | | | | **1,288** | **$205,240** |
+| Resource | Loading | Weekly Hours | Hourly Rate | Total Hours | Base Cost | Risk Multiplier | Adjusted Cost |
+|----------|---------|-------------|-------------|-------------|-----------|-----------------|---------------|
+| **Technical Lead** | 60% | 24 | $205 | 336 | $68,880 | 1.4x | $96,432 |
+| **Senior Developer #1** | 100% | 40 | $195 | 560 | $109,200 | 1.4x | $152,880 |
+| **Senior Developer #2** | 100% | 40 | $195 | 560 | $109,200 | 1.4x | $152,880 |
+| **EW/Testing Engineer** | 50% | 20 | $115 | 280 | $32,200 | 1.3x | $41,860 |
+| **Project Manager** | 25% | 10 | $175 | 140 | $24,500 | 1.2x | $29,400 |
+| **Subtotal** | | **134 hrs/week** | | **1,876** | **$343,980** | | **$473,452** |
 
-#### Task Allocation by Week (MVP Scope Only)
+**Risk Multipliers Applied:**
+- SAP S4/HANA Integration Complexity: 1.4x
+- Compressed Timeline: 1.3x-1.4x  
+- Phased approach with balanced team
+- Manual processes only = lower complexity
 
-**Weeks 1-2: Emergency Infrastructure Setup**
-- EW Engineer: Gateway deployment, network validation (80 hrs)
-- Senior Developer: SAP API connectivity, authentication (80 hrs)
-- Technical Lead: Architecture review, risk assessment (16 hrs)
-- Project Manager: Team coordination, stakeholder communication (8 hrs)
+#### Phase 1 Task Allocation (5-Person Team, Laurel Only)
 
-**Weeks 3-6: Core Development Sprint**
-- EW Engineer: Manual confirmation interface development (160 hrs)
-- Senior Developer: 4-step SAP transaction implementation (160 hrs)
-- Technical Lead: Code reviews, technical decisions (32 hrs)
-- Project Manager: Progress tracking, issue escalation (16 hrs)
+**Weeks 1-2: Infrastructure & Connectivity**
+- Technical Lead: Architecture design, technical decisions (48 hrs)
+- Senior Developer #1: SAP API connectivity, authentication (80 hrs)
+- Senior Developer #2: Gateway deployment, database setup (80 hrs)
+- EW/Testing Engineer: Test environment validation, network testing (40 hrs)
+- Project Manager: Stakeholder coordination, risk tracking (20 hrs)
 
-**Weeks 7-8: Integration Testing & UAT**
-- EW Engineer: Testing execution, bug fixes (80 hrs)
-- Senior Developer: Integration debugging, performance tuning (80 hrs)
-- Technical Lead: Test review, go/no-go assessment (16 hrs)
-- Project Manager: UAT coordination, business user liaison (8 hrs)
+**Weeks 3-6: Core Manual Confirmation Development**
+- Technical Lead: 4-step transaction design, code reviews (96 hrs)
+- Senior Developer #1: Manual confirmation UI development (160 hrs)
+- Senior Developer #2: SAP integration, order management (160 hrs)
+- EW/Testing Engineer: Test case development, early testing (80 hrs)
+- Project Manager: Weekly status updates, risk management (40 hrs)
 
-**Weeks 9-12: Parallel Run & Go-Live Prep**
-- EW Engineer: Production support, monitoring setup (160 hrs)
-- Senior Developer: Final optimizations, error handling (160 hrs)
-- Technical Lead: Go-live readiness review, risk mitigation (32 hrs)
-- Project Manager: Cutover planning, communication (16 hrs)
+**Weeks 7-8: Integration Testing**
+- Technical Lead: Testing coordination, architecture validation (48 hrs)
+- Senior Developer #1: Bug fixes, UI refinements (80 hrs)
+- Senior Developer #2: API testing, integration debugging (80 hrs)
+- EW/Testing Engineer: Test execution, defect tracking (40 hrs)
+- Project Manager: Test tracking, issue escalation (20 hrs)
+
+**Weeks 9-10: User Acceptance Testing**
+- Technical Lead: UAT support, critical decisions (48 hrs)
+- Senior Developer #1: User-reported bug fixes (80 hrs)
+- Senior Developer #2: Performance tuning, data validation (80 hrs)
+- EW/Testing Engineer: UAT script execution, training materials (40 hrs)
+- Project Manager: UAT coordination with Laurel business (20 hrs)
+
+**Weeks 11-12: Parallel Run Preparation**
+- Technical Lead: Parallel run strategy, validation (48 hrs)
+- Senior Developer #1: Production data migration prep (80 hrs)
+- Senior Developer #2: Monitoring setup, system config (80 hrs)
+- EW/Testing Engineer: Parallel run testing, documentation (40 hrs)
+- Project Manager: Cutover planning, communication (20 hrs)
 
 **Weeks 13-14: Go-Live & Stabilization**
-- EW Engineer: Production support, issue resolution (80 hrs)
-- Senior Developer: Hot fixes, system stabilization (80 hrs)
-- Technical Lead: Post-go-live assessment (16 hrs)
-- Project Manager: Project closure, lessons learned (8 hrs)
+- Technical Lead: Go-live oversight, critical issues (48 hrs)
+- Senior Developer #1: Production support, hot fixes (80 hrs)
+- Senior Developer #2: System monitoring, performance (80 hrs)
+- EW/Testing Engineer: User support, issue documentation (40 hrs)
+- Project Manager: Stakeholder communication, closure (20 hrs)
 
-#### Complexity Adjustments Applied
+#### Why Phase 1 Pricing Reflects Reality
 
-**Technology Risk Multipliers:**
-- SAP S4/HANA Integration: 1.3x complexity
-- Compressed Timeline: 1.2x pressure factor
-- APIM Error Handling: 1.5x due to limited visibility
+**Compressed Timeline Impact:**
+- 14 weeks vs. industry standard 32 weeks = 2.3x compression
+- Balanced team with dedicated testing resource
+- Zero buffer for rework or delays
+- Single site focus (Laurel only)
 
-**Effective Hourly Rates with Risk Adjustment:**
-- EW Engineer: $115 × 1.3 × 1.2 = $179/hour effective
-- Senior Developer: $195 × 1.3 × 1.2 = $304/hour effective
-- Technical Lead: $195 × 1.2 = $234/hour effective (architecture only)
-- Project Manager: $175 × 1.2 = $210/hour effective
+**Resource Factors:**
+- Technical Lead at 60% for architecture and oversight
+- Two Senior Developers for parallel development
+- Dedicated EW/Testing Engineer at 50% for quality
+- Risk multipliers for compressed timeline
 
-**Risk-Adjusted Total Cost:** $305,000
+**Phase 1 Fixed Price: $473,500**
+- Reflects true cost of compressed timeline delivery
+- Optimized team loading for efficiency
+- Includes appropriate risk contingency
+- Phased approach enables manageable scope
 
 ### 13.2 Commercial Terms
 
 #### Payment Schedule
 
-**MVP Phase - Foundation ($305,000):**
-- 30% ($91,500) - Contract execution and team mobilization
-- 25% ($76,250) - Infrastructure complete and API integration working
-- 25% ($76,250) - Manual confirmation system functional and UAT complete
-- 20% ($61,000) - Go-live successful and system stable
+**Phase 1 - Foundation & Basic Integration ($473,500):**
+- 30% ($142,050) - Contract execution and team mobilization
+- 20% ($94,700) - Infrastructure complete and API connectivity verified
+- 20% ($94,700) - Manual confirmation system functional
+- 20% ($94,700) - UAT complete and parallel run started
+- 10% ($47,350) - Go-live successful and system stable
 
-**Phase 2 - Site Expansion (Future - $180,000-$220,000):**
-- 40% - Phase 2 contract execution and site deployments begin
-- 35% - 3 additional sites deployed and tested
-- 25% - All sites operational and training complete
+**Phase 2 - Error Handling, Automation & Expansion ($380,000-$450,000):**
+- 30% - Phase 2 contract execution and development start
+- 25% - Error handling framework and PLC integration complete
+- 25% - 3 additional sites deployed with automation
+- 20% - All sites operational with full automation
 
-**Phase 3 - Advanced Features (Optional - $75,000-$150,000):**
+**Phase 3 - Advanced Features (Optional - $150,000-$250,000):**
 - Monthly invoicing based on time and materials
 - Not-to-exceed limits established for each enhancement
 - Go/no-go decisions at each feature milestone
@@ -1832,31 +1939,40 @@ Based on the detailed analysis and risk assessment, Grantek proposes a phased pr
 
 ### 13.5 Assumptions & Clarifications
 
-#### Key Assumptions
-- OC provides S4/HANA API access and documentation by October 15, 2025
-- Network infrastructure available at all sites by November 1, 2025
-- Test environment available by November 1, 2025
-- Business users available for UAT during December 2025
-- Production systems available for testing during off-hours
-- Standard business hours for remote development work
-- One documentation review cycle per deliverable
+#### Phase 1 Critical Assumptions
+- **S4/HANA Test Environment:** Available and functional by November 1, 2025
+- **API Documentation:** Complete SAP API documentation provided before project start
+- **Network Infrastructure:** Laurel site connectivity established by November 1, 2025
+- **Test Data:** Realistic test data available in S4/HANA test instance
+- **Business User Availability:** Dedicated UAT resources during Weeks 9-10
+- **No Automation:** Phase 1 is manual confirmations only - no PLC integration
+- **Single Site:** Phase 1 covers Laurel site only
 
-#### Scope Clarifications  
-- Pricing based on manual confirmation system for Phase 1
-- PLC integration assumes existing connections to plant systems
-- Response file generation based on up to 5 unique formats
-- Training includes up to 20 operators across all sites
-- One year of post-implementation support included
-- Additional sites or major scope changes subject to change orders
+#### Phase 1 Scope Clarifications  
+- **Manual Process Only:** Operators manually enter confirmation data
+- **Basic Functionality:** Simple screens for order viewing and confirmation entry
+- **No Error Recovery:** Basic validation only, complex error handling in Phase 2
+- **Limited Integration:** REST API only, no Kafka or Event Streams
+- **Training Scope:** 10 operators at Laurel site only
+- **Documentation:** User guide for manual processes only
 
-#### Exclusions
+#### Phase 2 Prerequisites
+- **PLC Access:** Equipment integration points identified and accessible
+- **Error Scenarios:** Comprehensive error cases documented
+- **Test PLCs:** Simulation environment available for automation testing
+- **Multi-Site Infrastructure:** Network connectivity at all 4 sites
+- **Automation Requirements:** Counting logic and triggers defined
+
+#### Exclusions from Phase 1
 - Hardware procurement (servers, networking equipment)
-- Infrastructure installation and configuration
-- Third-party software licensing beyond Ignition modules  
-- Modifications to existing PLC/DCS systems
-- SAP S4/HANA system modifications or customizations
-- Production loss compensation during cutover
-- Ongoing maintenance and support beyond 12 months
+- PLC/equipment integration or modifications
+- Automatic confirmation capabilities
+- Complex error handling and retry logic
+- Performance optimization
+- Sites other than Laurel
+- Advanced reporting or analytics
+- Kafka/Event Streams integration
+- PI System integration
 
 ### 13.6 Next Steps
 
