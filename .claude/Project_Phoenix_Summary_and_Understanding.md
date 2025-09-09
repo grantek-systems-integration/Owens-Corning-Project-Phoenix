@@ -17,7 +17,7 @@ Project Phoenix is Owens Corning's initiative to migrate their Doors Division (f
 
 ### 1.2 Key Project Parameters
 - **Client:** Owens Corning - Doors Division
-- **Sites:** 4 manufacturing facilities
+- **Sites:** 4 intial manufacturing facilities, 30 additional
   - Sacopan, QC (Canada)
   - Laurel, MS
   - Wahpeton, ND
@@ -57,7 +57,7 @@ Based on current unknowns, the project scope could vary by **300-500%** dependin
 
 ### 2.3 Technology Stack Concerns
 **Ignition 8.3 with Event Streams Module:**
-- Released Q4 2024 - extremely new technology
+- Released Q4 2025 - extremely new technology
 - No known production deployments at scale
 - Critical dependency for Kafka integration
 - No proven fallback strategy identified
@@ -348,7 +348,7 @@ This document will be updated as new information becomes available through:
 - Risk assessments
 - Proposal development progress
 
-**Last Updated:** 2025-09-07  
+**Last Updated:** 2025-09-09  
 **Next Review:** Upon RFI response receipt  
 **Document Owner:** Grantek Proposal Team
 

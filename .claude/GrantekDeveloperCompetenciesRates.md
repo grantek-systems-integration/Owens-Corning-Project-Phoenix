@@ -19,29 +19,51 @@
 - Basic UI components
 - Standard configuration tasks
 - Straightforward data queries
+- Basic Ignition Screen Design
+- Basic PLC Integration
+- Documentation Building and Testing
+- Minor Commissioning and Onsite Tasks
+- Basic Troubleshooting
 
 **Medium Complexity:**
 - Business logic implementation
 - API integrations with error handling
 - Database stored procedures with logic
 - Multi-screen workflows
+- Database Schema implementation
+- Ignition gateway scripts for basic MES execution
+- Ignition integration for basic HMI and SCADA functionality
+- Basic Data structure design - UDTs, database tables, simple PLC sub routines
 
 **High Complexity:**
 - Complex business rules and validation
 - Advanced error recovery and compensation logic
 - Performance optimization
 - Integration architecture design
+- Full HMI Design and Architecture
+- Full MES Design and Architecture
+- Simple Database Schema Design
+- Simple Database Integration and Testing Tasks
+- Full Controls migration and cutover
+- Full PLC Routine design and integration
+- Consulting and Requirements Derivation
+- ERP Integration and Design
 
 **Very High Complexity:**
 - System architecture design
 - Advanced performance tuning
 - Complex transaction management
 - Cross-system integration orchestration
+- Multi site architecture and deployment
+- Multi Stage design and requirements derivation
+- Custom integrations outside of normal operating mode of Ignition, Python, SQL
+- Regulatory compliance frameworks for MES
+- Advanced execution logic and timing for MES type functionality
 
 ### 1.2 Developer Classifications
 
 #### Junior Developer (0-2 years experience)
-- **Hourly Rate:** $155 - $165
+- **Hourly Rate:** $115 - $165
 - **Supervision Required:** High
 - **Code Review:** Mandatory
 - **Rework Factor:** 20-30%
@@ -83,10 +105,10 @@
 | Task Type | Junior Developer | Senior Developer | Complexity Factor |
 |-----------|-----------------|------------------|------------------|
 | **Simple REST API Call** | 2-3 hours | 1 hour | Low |
-| **ERP API with Error Handling** | 4-5 hours | 2 hours | Medium |
-| **Complex Multi-Step API** | 8-12 hours | 4-6 hours | High |
-| **Transaction Compensation Logic** | N/A (not qualified) | 8-16 hours | Very High |
-| **API Performance Optimization** | N/A (not qualified) | 6-10 hours | High |
+| **ERP API with Error Handling** | 10-12 hours | 8-10 hours | Medium |
+| **Complex Multi-Step API** | 24-40 hours | 16-32 hours | High |
+| **Transaction Compensation Logic** | N/A (not qualified) | 40-60 hours | Very High |
+| **API Performance Optimization** | N/A (not qualified) | 32-40 hours | High |
 
 ### 2.3 Ignition Development
 
@@ -97,7 +119,7 @@
 | **Complex Dashboard** | 20-30 hours | 12-16 hours | High |
 | **Gateway Script (Simple)** | 4-6 hours | 2-3 hours | Medium |
 | **Gateway Script (Complex)** | 12-18 hours | 6-10 hours | High |
-| **Custom Module Development** | N/A (not qualified) | 40-80 hours | Very High |
+| **Custom Module Development** | N/A (not qualified) | 80-160 hours | Very High |
 
 ### 2.4 Testing & Quality Assurance
 
@@ -105,8 +127,8 @@
 |-----------|-----------------|------------------|------------------|
 | **Unit Test Creation** | 2-3 hours | 1-2 hours | Low |
 | **Integration Test Suite** | 8-12 hours | 4-6 hours | Medium |
-| **Performance Testing** | N/A (not qualified) | 12-20 hours | High |
-| **Load Testing Setup** | N/A (not qualified) | 16-24 hours | Very High |
+| **Performance Testing** | N/A (not qualified) | 24-40 hours | High |
+| **Load Testing Setup** | N/A (not qualified) | 40-80 hours | Very High |
 
 ### 2.5 Documentation
 
@@ -114,8 +136,8 @@
 |-----------|-----------------|------------------|------------------|
 | **Code Documentation** | 1-2 hours | 0.5-1 hour | Low |
 | **User Manual (per screen)** | 2-4 hours | 1-2 hours | Medium |
-| **Technical Architecture Doc** | N/A (not qualified) | 8-16 hours | High |
-| **System Integration Guide** | N/A (not qualified) | 12-24 hours | Very High |
+| **Technical Architecture Doc** | N/A (not qualified) | 12-16 hours | High |
+| **System Integration Guide** | N/A (not qualified) | 24-32 hours | Very High |
 
 ---
 
@@ -124,29 +146,29 @@
 ### 3.1 Technology Stack Complexity Multipliers
 
 **Ignition 8.3 (Event Streams Module):**
-- **Multiplier:** 1.5x - 2.0x (bleeding edge technology)
+- **Multiplier:** 2.0x - 3.0x (bleeding edge technology)
 - **Risk Factor:** High (limited documentation/examples)
 - **Applies to:** All Event Streams related development
 
 **SAP S4/HANA API Integration:**
-- **Multiplier:** 1.3x - 1.5x (complex enterprise integration)
+- **Multiplier:** 2x - 4x (complex enterprise integration)
 - **Risk Factor:** Medium (well-documented but complex)
 - **Applies to:** All SAP API development
 
 **Multi-Step Transaction Management:**
-- **Multiplier:** 1.4x - 1.8x (complex error handling)
+- **Multiplier:** 3x - 4x (complex error handling)
 - **Risk Factor:** High (compensation logic complexity)
 - **Applies to:** 4-step confirmation process
 
 **APIM Error Handling:**
-- **Multiplier:** 1.6x - 2.0x (limited visibility into errors)
+- **Multiplier:** 2x - 2.5x (limited visibility into errors)
 - **Risk Factor:** High (unknown error patterns)
 - **Applies to:** All APIM integration work
 
 ### 3.2 Timeline Compression Adjustments
 
 **Compressed Timeline (November Start):**
-- **Multiplier:** 1.2x - 1.4x (pressure, parallel development)
+- **Multiplier:** 1.5x - 3x (pressure, parallel development)
 - **Risk Factor:** Critical (no buffer for rework)
 - **Quality Impact:** May require additional review/testing time
 
@@ -166,7 +188,7 @@
 | **Junior Developer** | 0-2 years | $165 | Simple tasks, supervised work |
 | **Mid-Level Developer** | 2-5 years | $185 | Standard development tasks |
 | **Senior Developer** | 5-10 years | $195 | Complex development, mentoring |
-| **Principal Developer** | 10+ years | $205 | Architecture, complex problems |
+| **Technical Lead** | 10+ years | $205 | Architecture, complex problems |
 
 ### 4.2 Specialized Roles
 
@@ -238,9 +260,9 @@
 
 **Blended Rate Calculation:**
 ```
-Weighted Average = (Senior Hours × $170) + (Mid Hours × $150) + (Specialized Hours × $180) + (Junior Hours × $130) / Total Hours
+Weighted Average = (Senior Hours × $205) + (Mid Hours × $195) + (Specialized Hours × $245) + (Junior Hours × $165) / Total Hours
 
-Target Blended Rate: $160-170/hour for Project Phoenix
+Target Blended Rate: $225/hour for Project Phoenix
 ```
 
 ---

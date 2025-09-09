@@ -17,7 +17,7 @@
 - **Type:** Full-service Systems Integration Company
 - **Employees:** 142+ engineers, designers, MES engineers, consultants, and project managers
 - **Offices:** British Columbia, Ontario, Quebec, Illinois, Pennsylvania, Ohio, California, Florida, and Bangalore
-- **Local Presence:** Allentown, PA office for regional support
+
 
 ### 1.2 Professional Certifications
 - Control Systems Integrators Association (CSIA) Certified
@@ -235,7 +235,7 @@
 - Used for discovery phases
 - Post-commissioning support
 - Undefined scope elements
-- Hourly rates: $142.60 - $185 (role dependent)
+- Hourly rates: $115 - $245 (role dependent)
 
 **Hybrid Approach:**
 - Fixed price for defined scope
@@ -297,7 +297,7 @@
 ## 7. KEY DIFFERENTIATORS FOR PROPOSALS
 
 ### 7.1 Grantek Advantages
-1. **Local Presence:** Allentown office for PA/regional support
+1. **Local Presence:** Offices within 2 Hours of Major Clients
 2. **Domain Expertise:** Proven success in similar implementations
 3. **Technology Leadership:** Premier Ignition integrator status
 4. **Full Service:** Design through support lifecycle
