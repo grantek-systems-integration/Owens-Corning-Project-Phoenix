@@ -964,130 +964,127 @@ transaction_state = {
 
 ## 5. Implementation Approach
 
-### 5.1 Phase 1: Foundation (Months 1-3)
-**Objective:** Establish core integration with proven technology
+### 5.1 Phase 1: Foundation (November 2025 - February 2026)
+**14 Weeks - Fixed Price Engagement**
+**Objective:** Establish manual confirmation system at Laurel site only
 
-**Week 1-2: Infrastructure Setup**
-- Deploy Ignition Gateway servers at all 4 sites
-- Configure PostgreSQL databases with schema design
-- Establish secure network connections to World HQ Gateway
+**Infrastructure & Connectivity (Weeks 1-2)**
+- Deploy Ignition Gateway server at Laurel site
+- Configure PostgreSQL database with schema design
+- Establish secure network connections to SAP via APIM
 - Set up development and test environments
 - Configure SSL certificates and authentication
 
-**Week 3-4: SAP API Integration**
-- Implement REST API client with circuit breaker pattern
-- Configure OAuth 2.0 authentication with SAP
+**Core Development (Weeks 3-6)**
+- Implement REST API client with SAP S4/HANA
 - Build production order download functionality
-- Create material master data synchronization
-- Implement comprehensive logging and monitoring
-
-**Week 5-8: Core Confirmation System**
 - Develop manual confirmation interface in Perspective
-- Implement 4-step confirmation process with transaction integrity
-- Create error handling with automatic retry logic
-- Build production order display and filtering
-- Configure local caching for offline operation
+- Implement 4-step confirmation process
+- Create basic error handling and validation
 
-**Week 9-14: Testing & Integration**
-- Execute unit testing for all components
-- Perform integration testing with SAP S4/HANA APIs
-- Conduct user acceptance testing at pilot site
-- Performance testing under production load
-- Security penetration testing
+**Testing & Validation (Weeks 7-10)**
+- Execute integration testing with SAP APIs
+- Conduct User Acceptance Testing with Laurel operators
+- Validate 4-step transaction process
+- Performance testing under expected load
+- Security validation and penetration testing
 
-**Deliverables:**
-- REST API integration framework with resilience patterns
-- Production order download and caching system
-- Manual confirmation interface with full 4-step process
-- Basic error handling and recovery queue
-- Local cache implementation with offline capabilities
-- Database schema with audit trails
-- Authentication and authorization framework
-- Monitoring dashboards for system health
+**Deployment & Stabilization (Weeks 11-14)**
+- Parallel run with existing processes
+- Production cutover at Laurel site
+- Intensive monitoring and support
+- Issue resolution and system optimization
+- Knowledge transfer to operations team
 
 **Success Criteria:**
-- Successfully download and display orders from S4/HANA
-- Complete full 4-step confirmation process (>99% success rate)
-- Demonstrate 4-hour offline operation capability
-- Process 100+ confirmations/hour per site
-- Pass all integration and security tests
+- Manual confirmation system operational at Laurel
+- 4-step SAP transaction process reliable (>99% success)
+- Operators trained and confident on system
+- System stability demonstrated over 2 weeks
 
+### 5.2 Phase 2: Automation & Multi-Site Deployment (March - August 2026)
+**4-6 Months - Time & Materials Engagement**
+**Objective:** Implement automatic confirmations and deploy to remaining 3 sites
 
-### 5.2 Phase 2: Enhancement (Months 4-5)
-**Objective:** Add automation and optimization
+**Error Framework & PLC Discovery (Month 1)**
+- Implement comprehensive APIM-aware error management
+- Build transaction compensation and rollback logic
+- Conduct PLC inventory and assessment at all sites
+- Develop integration strategy for each equipment type
+- Design UDT structure for device communications
 
-**Week 15-16: Advanced Error Recovery**
-- Implement intelligent retry strategies with exponential backoff
-- Build compensation transaction logic for partial failures
-- Create manual intervention workflows for stuck transactions
-- Develop batch recovery tools for historical data
-- Enhance error reporting with root cause analysis
+**Laurel Automation (Month 2)**
+- Establish PLC connections and protocols at Laurel
+- Implement automatic counting for all equipment:
+  - Dropout sensors (Brownboard/Fiberglass Press)
+  - Laser eye systems (Cut Coat)
+  - CIM PLC interfaces (SMC Bin)
+  - Scale system integration
+- Configure production order attribution logic
+- Implement Make to Stock (MTS) functionality
+- Test automation with production equipment
 
-**Week 17-18: Performance Optimization**
-- Database query optimization and indexing
-- Implement connection pooling and resource management
-- Add caching for frequently accessed data
-- Configure batch processing for high-volume operations
-- Load balancing across gateway nodes
+**Multi-Site Rollout (Months 3-5)**
+- **Sacopan Deployment (Month 3):**
+  - Site deployment and PLC integration
+  - Single counting point at Forming
+  - Site-specific testing and operator training
+- **Wahpeton Deployment (Month 4):**
+  - Site assessment and equipment integration
+  - Configuration based on site requirements
+  - Testing and training delivery
+- **Verdi Deployment (Month 5):**
+  - Final site deployment
+  - Equipment integration and testing
+  - Operator training and documentation
 
-**Week 19-20: Enhanced Monitoring & Analytics**
-- Real-time performance dashboards
-- Automated alerting for system anomalies
-- Business intelligence reports for production metrics
-- Predictive maintenance alerts
-- Integration with existing OC monitoring systems
-
-**Deliverables:**
-- Advanced error recovery system with compensation logic
-- Performance-optimized database and application layer
-- Batch processing capabilities for high-volume operations
-- Automated alerting and notification system
-- Documentation and training for Level 2 support
-
-**Success Criteria:**
-- Achieve 70% automatic confirmation rate (vs 100% manual baseline)
-- Error recovery success rate > 98% within 1 hour
-- Process 500+ confirmations/hour per site during peak
-- System availability > 99.5% excluding planned maintenance
-- Alert response time < 5 minutes for critical issues
-
-### 5.3 Phase 3: Advanced Features (Month 6+)
-**Objective:** Implement advanced capabilities if technology matures
-
-**Technology Assessment & Go/No-Go Decision (Week 21-24):**
-- Evaluate Ignition 8.3 Event Streams module stability
-- Assess Kafka infrastructure readiness
-- Review production deployment examples
-- Performance benchmarking of Event Streams vs REST API
-- Risk assessment update based on technology maturity
-
-**Kafka/Event Streams Implementation (Week 25-30) - If Approved:**
-- Migrate from REST API to Kafka event streaming
-- Implement Event Streams producers and consumers
-- Configure topic partitioning and consumer groups
-- Build event replay and recovery mechanisms
-- Performance testing with real-time event processing
-
-**Enterprise Integration Enhancements (Week 31-33):**
-- Integration with additional ERP modules (QM, PM, WM)
-- Advanced reporting and analytics dashboards
-- Mobile applications for supervisors and managers
-- API endpoints for third-party system integration
-
-**Deliverables (Conditional on Go-Decision):**
-- Kafka Event Streams integration with real-time processing
-- Enterprise integration framework
+**Optimization & Closure (Month 6)**
+- Performance tuning across all sites
+- System optimization based on production data
+- Final documentation and knowledge transfer
+- Transition to operational support
 
 **Success Criteria:**
-- Event processing latency < 100ms for critical transactions
-- 99.99% message delivery reliability
-- API response time < 200ms for external integrations
+- All 4 sites operational with automatic confirmations
+- PLC integrations stable and reliable
+- Error handling framework proven effective
+- MTS functionality meeting requirements
 
-**Risk Mitigation:**
-- Parallel operation of REST API during Kafka transition
-- Rollback procedures if Event Streams proves unstable
-- Phased migration approach for critical production systems
-- Extensive load testing before production deployment
+### 5.3 Phase 3: Kafka Migration (September - November 2026)
+**3 Months - Time & Materials Engagement**
+**Objective:** Migrate from REST API to Kafka streaming with parallel validation
+
+**Kafka Infrastructure Setup (Month 1)**
+- Install and configure Ignition 8.3 with Event Streams module
+- Establish Kafka connectivity to Azure infrastructure
+- Configure topic subscriptions for:
+  - Production Orders
+  - Material Master Data
+  - Confirmation acknowledgments
+- Setup publisher topics for confirmations and movements
+- Implement message schema mappings
+
+**Parallel Run Implementation (Month 2)**
+- Maintain existing REST API operations
+- Implement Kafka streaming in parallel
+- Build comparison and validation logic between paths
+- Monitor discrepancies and performance metrics
+- Tune Kafka configuration for optimal performance
+- Document differences and resolution strategies
+
+**Phased Cutover (Month 3)**
+- **Week 1-2:** Migrate read-only operations (orders, materials)
+- **Week 3:** Migrate non-critical confirmations
+- **Week 4:** Complete production confirmation cutover
+- Maintain REST API as fallback for 90 days
+- Final optimization and performance validation
+- Documentation completion and knowledge transfer
+
+**Success Criteria:**
+- Kafka streaming operational with >99.9% reliability
+- Performance metrics meet or exceed REST API benchmarks
+- Seamless fallback capability maintained and tested
+- All sites successfully migrated with no production impact
 
 ---
 
@@ -1592,14 +1589,52 @@ Parallel Run (Week 9-10) -> Go-Live Prep (Week 11-12) -> Feb 6 Go-Live
 - **Recommended Buffers:** 4-6 weeks (10-15% buffer)
 - **Risk Mitigation:** Phased go-live if behind schedule
 
-#### Resource Loading Analysis
+#### Resource Loading Analysis - All Phases
+
+**Phase 1: Foundation (Nov 2025 - Feb 2026)**
 ```
-Weeks 1-4:   ████████░░ (80% capacity) - Infrastructure & Setup
-Weeks 5-12:  ██████████ (100% capacity) - Core Development
-Weeks 13-20: ██████████ (100% capacity) - Enhancement Development  
-Weeks 21-24: ████████░░ (80% capacity) - Testing & Validation
-Weeks 25-30: ██████░░░░ (60% capacity) - Pre-Production
-Weeks 31-35: ████░░░░░░ (40% capacity) - Go-Live & Support
+5-Person Team - Fixed Price
+Weeks 1-2:   ████████░░ (80% capacity) - Infrastructure & Setup
+Weeks 3-6:   ██████████ (100% capacity) - Core Development
+Weeks 7-10:  ██████████ (100% capacity) - Testing & UAT
+Weeks 11-14: ████████░░ (80% capacity) - Go-Live & Stabilization
+
+Team Composition: 134 hrs/week
+- Technical Lead (60%): 24 hrs/week
+- Senior Developer #1 (100%): 40 hrs/week  
+- Senior Developer #2 (100%): 40 hrs/week
+- EW/Testing Engineer (50%): 20 hrs/week
+- Project Manager (25%): 10 hrs/week
+```
+
+**Phase 2: Automation & Multi-Site (Mar - Aug 2026)**
+```
+3-Person Team - Time & Materials
+Month 1:     ██████████ (100% capacity) - Error Framework & PLC Discovery
+Month 2:     ██████████ (100% capacity) - Laurel Automation
+Month 3:     ██████████ (100% capacity) - Sacopan Deployment
+Month 4:     ██████████ (100% capacity) - Wahpeton Deployment
+Month 5:     ██████████ (100% capacity) - Verdi Deployment
+Month 6:     ████████░░ (80% capacity) - Optimization & Closure
+
+Team Composition: 94 hrs/week
+- Technical Lead (60%): 24 hrs/week
+- Senior Developer (100%): 40 hrs/week
+- Junior Developer (50%): 20 hrs/week (onsite support)
+- Project Manager (25%): 10 hrs/week
+```
+
+**Phase 3: Kafka Migration (Sep - Nov 2026)**
+```
+3-Person Team - Time & Materials  
+Month 1:     ██████████ (100% capacity) - Kafka Infrastructure Setup
+Month 2:     ██████████ (100% capacity) - Parallel Run Implementation
+Month 3:     ████████░░ (80% capacity) - Phased Cutover
+
+Team Composition: 60 hrs/week
+- Technical Lead (40%): 16 hrs/week
+- Senior Developer (100%): 40 hrs/week
+- Project Manager (10%): 4 hrs/week
 ```
 
 ### 12.3 Compressed Timeline Milestone Gates & Go/No-Go Decisions
@@ -1754,8 +1789,19 @@ Weeks 31-35: ████░░░░░░ (40% capacity) - Go-Live & Support
 
 ### 13.1 Pricing Structure
 
-#### Fixed-Price Project Phases
-Based on the detailed analysis and risk assessment, Grantek proposes a phased pricing approach that balances project certainty with flexibility for discovered requirements.
+#### Phased Implementation Summary
+
+| Phase | Timeline | Scope | Pricing Model | Investment Range |
+|-------|----------|-------|---------------|------------------|
+| **Phase 1** | Nov 2025 - Feb 2026<br>(14 weeks) | Manual confirmations at Laurel only | Fixed Price | $473,500 |
+| **Phase 2** | Mar 2026 - Aug 2026<br>(4-6 months) | Automation + 3 sites deployment | Time & Materials | $420,000 - $631,000 |
+| **Phase 3** | Sep 2026 - Nov 2026<br>(3 months) | Kafka migration with parallel run | Time & Materials | $188,640 |
+| **Total Program** | Nov 2025 - Nov 2026<br>(12 months) | Complete implementation all sites | Mixed | **$1,082,140 - $1,293,140** |
+
+#### Pricing Approach Rationale
+Based on the detailed analysis and risk assessment, Grantek proposes a mixed pricing approach:
+- **Phase 1:** Fixed price for well-defined manual system scope
+- **Phase 2 & 3:** Time & Materials due to integration uncertainties and technology risks
 
 **Phase 1: Foundation & Basic Integration (Fixed Price)**
 **Scope Limited to Laurel Site Only - Manual Confirmations ONLY**
@@ -1784,34 +1830,188 @@ Based on the detailed analysis and risk assessment, Grantek proposes a phased pr
 **Phase 1 Investment:** $473,500
 **(14 weeks, 5-person team, Laurel site only)**
 
-**Phase 2: Error Handling, Automation & Site Expansion (Future Fixed Price)**
-**Scope: Complex Integration Features + 3 Additional Sites**
+**Phase 2: Automation, Error Handling & Multi-Site Deployment (Time & Materials)**
+**Timeline: 4-6 Months | March 2026 - August 2026**
 
-**INCLUDED in Phase 2:**
-- Comprehensive error handling framework
-- Advanced retry logic with exponential backoff
-- Transaction compensation and rollback procedures
-- PLC integration for automatic confirmations
-- Equipment sensor integration and counting
-- Performance optimization and batch processing
-- Deploy to Sacopan, Wahpeton, Verdi sites
-- Enhanced monitoring dashboards
-- Advanced operator training
+**COMPREHENSIVE PHASE 2 SCOPE:**
 
-**Estimated Phase 2 Investment:** $380,000 - $450,000
-**(10-12 weeks, same team, complex integration)**
+**A. Multi-Site Deployment (3 Additional Sites)**
+- Deploy complete system to Sacopan, Wahpeton, and Verdi sites
+- Site-specific configuration for each plant's unique requirements:
+  - Sacopan: Single counting point at Forming
+  - Wahpeton: TBD based on site assessment
+  - Verdi: TBD based on site assessment
+- Network infrastructure validation at each site
+- Local database deployment and configuration
+- Site-specific testing and validation
 
-**Phase 3: Advanced Features (Time & Materials - Optional)**
-**Scope: Future Enhancements if Technology Matures**
+**B. Automatic Confirmations & PLC Integration**
+- Direct PLC integration for automatic production counting
+- Equipment-specific integrations including:
+  - Dropout sensors (Brownboard Press, Fiberglass Press)
+  - Laser eye systems (Cut Coat)
+  - CIM PLC interfaces (SMC Bin)
+  - Scale system integration (Laurel specific)
+- Ignition UDT development for each equipment type
+- Real-time data acquisition and buffering
+- Production order attribution logic (time-based and operator-override)
+- Count accumulation and consolidation strategies
 
-- Kafka/Event Streams integration (when Ignition 8.3 stable)
-- Advanced analytics and KPI reporting
-- Mobile applications for supervisors
-- PI System integration (if required)
-- Integration with additional SAP modules
+**C. Make to Stock (MTS) Functionality**
+- Special handling for non-order-based production
+- Inventory posting without specific sales orders
+- Generic stock confirmations to warehouse locations
+- MTS vs MTO differentiation logic
+- Batch/lot tracking for MTS products
+- Automatic warehouse location determination
 
-**Estimated Phase 3 Investment:** $150,000 - $250,000
-**(6-10 weeks, specialized development as needed)**
+**D. Comprehensive Error Handling Framework**
+- Implementation of full APIM-aware error management
+- Multi-layered error detection and classification
+- Transaction rollback and compensation logic for 4-step process
+- Retry mechanisms with exponential backoff
+- Error queue management and recovery procedures
+- Supervisor escalation workflows
+- Detailed error logging and diagnostics
+
+**E. Field Device Integration Requirements**
+- **Onsite Activities (1-2 trips per site):**
+  - PLC connection establishment and testing
+  - Network security configuration
+  - Device communication validation
+  - Signal mapping and scaling
+  - Integration testing with production equipment
+- **Equipment Integration Scope:**
+  - Identify and map all counting points
+  - Configure data collection rates
+  - Implement data quality checks
+  - Setup redundant communication paths
+
+**F. Advanced Features**
+- Performance optimization for high-volume transactions
+- Batch confirmation processing
+- Parallel processing for multiple production lines
+- Advanced monitoring dashboards with KPIs
+- Predictive alerting for potential issues
+- Historical data analysis and reporting
+
+**Phase 2 Resource Requirements (Time & Materials):**
+- **Technical Lead:** 60% loading (24 hrs/week) @ $205/hour
+- **Senior Developer:** 100% loading (40 hrs/week) @ $195/hour
+- **Junior Developer:** 50% loading (20 hrs/week) @ $165/hour (onsite support)
+- **Project Manager:** 25% loading (10 hrs/week) @ $175/hour
+
+**Phase 2 Investment Breakdown (Time & Materials):**
+
+| Duration | 4 Months | 5 Months | 6 Months |
+|----------|----------|----------|----------|
+| **Labor Hours** | 2,176 hrs | 2,720 hrs | 3,264 hrs |
+| **Base Labor Cost** | $396,960 | $496,200 | $595,440 |
+| **Travel & Expenses** | $24,000 | $30,000 | $36,000 |
+| **Total Investment** | **$420,960** | **$526,200** | **$631,440** |
+
+*Note: Pricing includes onsite travel for PLC integration at 4 sites (1-2 trips per site)*
+*Actual costs will be invoiced monthly based on hours worked and expenses incurred*
+
+**Phase 2 Key Deliverables & Milestones:**
+
+| Month | Milestone | Deliverables | Success Criteria |
+|-------|-----------|--------------|------------------|
+| **Month 1** | Error Framework & PLC Discovery | - Error handling design<br>- PLC inventory & assessment<br>- Site readiness evaluation | Framework approved, PLCs identified |
+| **Month 2** | Laurel Automation | - PLC integrations complete<br>- Automatic confirmations working<br>- MTS functionality operational | Laurel running automated |
+| **Month 3** | Sacopan Deployment | - Site deployment complete<br>- Integration testing passed<br>- Operator training delivered | Sacopan operational |
+| **Month 4** | Wahpeton Deployment | - Site deployment complete<br>- Integration testing passed<br>- Operator training delivered | Wahpeton operational |
+| **Month 5** | Verdi Deployment | - Site deployment complete<br>- Integration testing passed<br>- Operator training delivered | Verdi operational |
+| **Month 6** | Optimization & Closure | - Performance tuning<br>- Documentation complete<br>- Knowledge transfer | All sites stable |
+
+**Phase 3: Kafka/Event Streams Migration with Parallel Run (Time & Materials)**
+**Timeline: 3 Months | September 2026 - November 2026**
+
+**PHASE 3 SCOPE - KAFKA CUTOVER WITH PARALLEL OPERATION:**
+
+**A. Ignition 8.3 Event Streams Implementation**
+- Upgrade Ignition platform to 8.3 (if stable and validated)
+- Install and configure Event Streams module
+- Establish Kafka connectivity to Azure infrastructure
+- Configure consumer and producer endpoints
+- Implement message serialization/deserialization
+
+**B. Kafka Topic Integration**
+- Subscribe to SAP Datasphere Kafka topics:
+  - Production Orders Topic
+  - Material Master Topic
+  - Confirmation acknowledgments
+- Configure publisher topics for:
+  - Production confirmations
+  - Goods movements
+  - Quality data
+- Implement message schema mappings
+- Setup error topic handling
+
+**C. Parallel Run Strategy**
+- **Dual-Path Operation:**
+  - Maintain existing REST API integration from Phase 1/2
+  - Implement Kafka streaming in parallel
+  - Compare results between both paths
+  - Log discrepancies for analysis
+- **Validation Approach:**
+  - Shadow mode operation for 30 days
+  - Data consistency validation (>99.9% match required)
+  - Performance metrics comparison
+  - Error rate analysis
+
+**D. Cutover Planning & Execution**
+- Phased cutover by transaction type:
+  - Week 1-4: Read-only operations (orders, materials)
+  - Week 5-8: Non-critical confirmations
+  - Week 9-12: Full production confirmations
+- Rollback procedures for each phase
+- Performance monitoring and optimization
+- Load testing at production volumes
+
+**E. Risk Mitigation**
+- Maintain REST API as fallback for 90 days post-cutover
+- Automated switchback capability
+- Real-time monitoring of Kafka health
+- Circuit breaker patterns for stream failures
+
+**Phase 3 Resource Requirements (Time & Materials):**
+- **Technical Lead:** 40% loading (16 hrs/week) @ $205/hour
+- **Senior Developer:** 100% loading (40 hrs/week) @ $195/hour
+- **Project Manager:** 10% loading (4 hrs/week) @ $175/hour
+
+**Phase 3 Investment Breakdown (Time & Materials):**
+
+| Duration | 3 Months |
+|----------|----------|
+| **Labor Hours** | 864 hrs |
+| **Base Labor Cost** | $157,200 |
+| **Contingency (Technology Risk)** | $31,440 (20%) |
+| **Total Estimated Investment** | **$188,640** |
+
+*Note: Due to bleeding-edge nature of Ignition 8.3 Event Streams, 20% contingency included*
+*Actual costs will be invoiced monthly based on hours worked*
+
+**Phase 3 Key Milestones:**
+
+| Month | Milestone | Deliverables | Success Criteria |
+|-------|-----------|--------------|------------------|
+| **Month 1** | Kafka Setup & Config | - Event Streams installed<br>- Topics configured<br>- Test messages flowing | Kafka connectivity established |
+| **Month 2** | Parallel Run Initiation | - Dual-path operation active<br>- Monitoring dashboards<br>- Discrepancy reporting | <5% data variance |
+| **Month 3** | Cutover & Stabilization | - Phased cutover complete<br>- REST API decommissioned<br>- Performance validated | Kafka primary path stable |
+
+**Phase 3 Prerequisites:**
+- Ignition 8.3 proven stable in production environments
+- Kafka infrastructure fully operational at OC
+- SAP Datasphere topics defined and accessible
+- APIM Kafka endpoints configured and tested
+- Phase 1/2 running stably for minimum 60 days
+
+**Phase 3 Risks & Mitigation:**
+- **Technology Immaturity:** Event Streams module may have bugs -> Maintain REST fallback
+- **Performance Issues:** Kafka may not meet throughput needs -> Optimize batching strategy
+- **Network Latency:** Streaming may increase latency -> Local buffering implementation
+- **Schema Changes:** Message formats may evolve -> Version management strategy
 
 #### Phase 1 Resource Loading (5-Person Team)
 
@@ -1917,16 +2117,19 @@ Based on the detailed analysis and risk assessment, Grantek proposes a phased pr
 - 20% ($94,700) - UAT complete and parallel run started
 - 10% ($47,350) - Go-live successful and system stable
 
-**Phase 2 - Error Handling, Automation & Expansion ($380,000-$450,000):**
-- 30% - Phase 2 contract execution and development start
-- 25% - Error handling framework and PLC integration complete
-- 25% - 3 additional sites deployed with automation
-- 20% - All sites operational with full automation
+**Phase 2 - Automation & Multi-Site Deployment (Time & Materials):**
+- Monthly invoicing for actual hours worked
+- Travel expenses billed at cost plus 10% handling
+- Monthly progress reports with hours breakdown
+- 30-day payment terms from invoice date
+- Right to audit time records
 
-**Phase 3 - Advanced Features (Optional - $150,000-$250,000):**
-- Monthly invoicing based on time and materials
-- Not-to-exceed limits established for each enhancement
-- Go/no-go decisions at each feature milestone
+**Phase 3 - Kafka Migration (Time & Materials):**
+- Monthly invoicing for actual hours worked
+- Parallel run metrics reported weekly
+- Go/no-go decision before final cutover
+- 30-day payment terms from invoice date
+- Contingency hours pre-approved due to technology risk
 
 #### Standard Terms & Conditions
 - **Payment Terms:** Net 60 days
@@ -1956,12 +2159,46 @@ Based on the detailed analysis and risk assessment, Grantek proposes a phased pr
 - **Training Scope:** 10 operators at Laurel site only
 - **Documentation:** User guide for manual processes only
 
-#### Phase 2 Prerequisites
-- **PLC Access:** Equipment integration points identified and accessible
-- **Error Scenarios:** Comprehensive error cases documented
-- **Test PLCs:** Simulation environment available for automation testing
-- **Multi-Site Infrastructure:** Network connectivity at all 4 sites
-- **Automation Requirements:** Counting logic and triggers defined
+#### Phase 2 Critical Assumptions & Prerequisites
+
+**Technical Prerequisites:**
+- **PLC Infrastructure:**
+  - PLCs are network-accessible from Ignition servers
+  - Standard protocols available (Ethernet/IP, OPC UA, Modbus)
+  - PLC programs can be modified if required for integration
+  - Test PLCs or simulators available for development
+  
+- **Field Devices:**
+  - Counting sensors properly configured and operational
+  - Devices generate reliable count signals
+  - Equipment downtime windows available for integration
+  - Maintenance team support for device access
+
+- **Network & Security:**
+  - VPN access established for remote development
+  - Firewall rules allow PLC communication
+  - Network bandwidth sufficient for real-time data
+  - Security approvals for device integration
+
+**Operational Prerequisites:**
+- **Site Readiness:**
+  - Local IT support available at each site
+  - Operators trained on Phase 1 manual system
+  - Production schedules allow for integration testing
+  - Site management approval for automation
+
+- **Data & Logic Requirements:**
+  - Production order assignment logic defined
+  - MTS vs MTO decision criteria documented
+  - Count accumulation rules specified
+  - Error recovery procedures approved
+
+**Phase 2 Specific Risks:**
+- **PLC Compatibility:** Unknown PLC types may require additional drivers
+- **Network Latency:** Remote sites may have connectivity challenges
+- **Production Impact:** Integration testing may affect production
+- **Resource Availability:** Junior developer requires travel flexibility
+- **Scope Creep:** Automation requirements may expand during implementation
 
 #### Exclusions from Phase 1
 - Hardware procurement (servers, networking equipment)
